@@ -201,8 +201,8 @@ Start with [Documentation/Troubleshooting.md](Documentation/Troubleshooting.md).
 
 | Name | Contribution |
 | --- | --- |
-| Dexter Ron | Hardware integration, Arduino programming, Python dashboard development, and testing |
-| Friend Name | Documentation, report preparation, and repository management |
+| Rupak Chatterjee | Hardware integration, Arduino programming, Python dashboard development, testing and repository management |
+| Aranyak Das | Documentation, report preparation, |
 
 Add collaborators through **Repository Settings -> Collaborators** and grant the least privilege required for the work.
 
