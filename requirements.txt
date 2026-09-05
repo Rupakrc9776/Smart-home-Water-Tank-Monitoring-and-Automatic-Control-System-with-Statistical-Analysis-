@@ -1,0 +1,5 @@
+ttkbootstrap>=1.10.1
+matplotlib>=3.8
+pandas>=2.1
+pyserial>=3.5
+Pillow>=10.0

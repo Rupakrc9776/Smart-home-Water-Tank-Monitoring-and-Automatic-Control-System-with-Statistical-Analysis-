@@ -1,0 +1,24 @@
+name: Feature request
+description: Propose a focused improvement to the project.
+title: "feature: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Hardware, software, and documentation impact
+      description: Include pins, serial protocol, safety, and compatibility considerations.
+    validations:
+      required: true

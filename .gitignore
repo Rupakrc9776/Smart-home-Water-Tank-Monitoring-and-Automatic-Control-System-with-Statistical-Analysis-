@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.vscode/settings.json
+screenshots/dashboard_*.png
+*.log
+.DS_Store
+Thumbs.db

@@ -1,0 +1,24 @@
+name: Python validation
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Compile Python modules
+        run: python -m py_compile dashboard.py dashboard_assets.py water_logger.py
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Verify dependency consistency
+        run: python -m pip check
+      - name: Run protocol tests
+        run: python -m unittest discover -s tests -p 'test_*.py'
