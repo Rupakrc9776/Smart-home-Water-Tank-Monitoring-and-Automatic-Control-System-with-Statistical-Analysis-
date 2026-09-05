@@ -21,6 +21,7 @@
 
 - [Project Overview](#project-overview)
 - [Key Features](#key-features)
+- [Project Showcase](#project-showcase)
 - [System Architecture](#system-architecture)
 - [Hardware](#hardware)
 - [Software Requirements](#software-requirements)
@@ -34,6 +35,7 @@
 - [Testing Results](#testing-results)
 - [Troubleshooting](#troubleshooting)
 - [Contributors](#contributors)
+- [Academic Guidance](#academic-guidance)
 - [Future Scope](#future-scope)
 - [License](#license)
 
@@ -61,6 +63,32 @@ For backward compatibility, the parser also accepts a four-field payload with a 
 - Append-only CSV logging with timestamp, distance, percentage, and pump state.
 - Rolling 30-reading trend graph, CSV export, graph export, and dashboard screenshots.
 - Average, maximum, minimum, and pump activation KPIs.
+
+## Project Showcase
+
+<div align="center">
+
+<figure>
+  <img src="assets/hardware-setup.jpg" alt="Hardware prototype with Arduino UNO and connected water tank components" width="720">
+  <figcaption><strong>Hardware Prototype</strong></figcaption>
+</figure>
+
+<figure>
+  <img src="assets/circuit-diagram.png" alt="Tinkercad-style circuit diagram for the smart water tank controller" width="720">
+  <figcaption><strong>Tinkercad-Style Circuit Diagram</strong></figcaption>
+</figure>
+
+<figure>
+  <img src="assets/dashboard-ui.png" alt="Live Python dashboard for water tank monitoring" width="720">
+  <figcaption><strong>Live Python Dashboard</strong></figcaption>
+</figure>
+
+<figure>
+  <img src="assets/water_level_graph.png" alt="Statistical water-level analysis graph" width="720">
+  <figcaption><strong>Statistical Analysis Graph</strong></figcaption>
+</figure>
+
+</div>
 
 ## System Architecture
 
@@ -199,12 +227,22 @@ Start with [Documentation/Troubleshooting.md](Documentation/Troubleshooting.md).
 
 ## Contributors
 
-| Name | Contribution |
+| Contributor | Role |
 | --- | --- |
-| Rupak Chatterjee | Hardware integration, Arduino programming, Python dashboard development, testing and repository management |
-| Aranyak Das | Documentation, report preparation, |
+| Dexter Ron | Hardware integration, Arduino programming, Python dashboard development, and testing |
+| Friend Name | Documentation, report preparation, and repository management |
 
 Add collaborators through **Repository Settings -> Collaborators** and grant the least privilege required for the work.
+
+## Academic Guidance
+
+> **Mr. Kingsuk Majumdar**  
+> **Academic Guidance**
+>
+> **Role:**
+> - Project Assignment
+> - Academic Guidance
+> - Technical Mentorship
 
 ## Future Scope
 
