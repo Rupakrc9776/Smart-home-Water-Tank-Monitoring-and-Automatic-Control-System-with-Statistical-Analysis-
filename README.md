@@ -6,13 +6,13 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Rupakrc9776/Smart_Water_Tank/actions"><img src="https://img.shields.io/github/actions/workflow/status/Rupakrc9776/Smart_Water_Tank/ci.yml?label=CI" alt="GitHub Actions"></a>
+  <a href="https://github.com/Rupakrc9776/Smart-home-Water-Tank-Monitoring-and-Automatic-Control-System-with-Statistical-Analysis-/actions"><img src="https://img.shields.io/github/actions/workflow/status/Rupakrc9776/Smart-home-Water-Tank-Monitoring-and-Automatic-Control-System-with-Statistical-Analysis-/ci.yml?label=CI" alt="GitHub Actions"></a>
   <img src="https://img.shields.io/badge/Arduino-00979D?logo=arduino&logoColor=white" alt="Arduino">
   <img src="https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white" alt="Python 3.13">
   <img src="https://img.shields.io/badge/License-MIT-2ea44f" alt="MIT License">
   <img src="https://img.shields.io/badge/Platform-Windows-0078D4?logo=windows&logoColor=white" alt="Windows">
   <img src="https://img.shields.io/badge/Editor-VS%20Code-007ACC?logo=visualstudiocode&logoColor=white" alt="VS Code">
-  <img src="https://img.shields.io/github/last-commit/Dexter-Ron/Smart_Water_Tank" alt="Last commit">
+  <img src="https://img.shields.io/github/last-commit/Rupakrc9776/Smart-home-Water-Tank-Monitoring-and-Automatic-Control-System-with-Statistical-Analysis-" alt="Last commit">
 </p>
 
 > B.Tech Electrical Engineering mini project for measuring tank level, indicating operating states, controlling a relay-driven pump, and presenting logged readings for statistical analysis.
