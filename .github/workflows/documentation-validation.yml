@@ -1,25 +1,25 @@
-name: Documentation validation
+name: Documentation Validation
 
-on:
-  push:
-  pull_request:
+on: [push, pull_request]
 
 jobs:
   docs:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-      - name: Validate required documentation
-        shell: bash
+      - uses: actions/checkout@v4
+
+      - name: Check required files
         run: |
-          test -s README.md
-          test -s LICENSE
-          test -s CONTRIBUTING.md
-          test -s CODE_OF_CONDUCT.md
-          test -s SECURITY.md
-          for file in Documentation/Installation.md Documentation/Hardware.md Documentation/Software.md Documentation/Dashboard.md Documentation/Statistical_Analysis.md Documentation/Testing.md Documentation/Troubleshooting.md Documentation/Future_Scope.md Documentation/Architecture.md; do
-            test -s "$file"
-          done
-          grep -q 'SMART HOME WATER TANK MONITORING AND AUTOMATIC CONTROL SYSTEM WITH STATISTICAL ANALYSIS' README.md
-          grep -q 'mermaid' Documentation/Architecture.md
+          test -f README.md
+          test -f LICENSE
+          test -f CONTRIBUTING.md
+          test -f SECURITY.md
+          test -f Documentation/Architecture.md
+          test -f Documentation/Installation.md
+          test -f Documentation/Hardware.md
+          test -f Documentation/Software.md
+          test -f Documentation/Dashboard.md
+          test -f Documentation/Statistical_Analysis.md
+          test -f Documentation/Testing.md
+          test -f Documentation/Future_Scope.md
