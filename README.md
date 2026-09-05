@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Dexter-Ron/Smart_Water_Tank/actions"><img src="https://img.shields.io/github/actions/workflow/status/Dexter-Ron/Smart_Water_Tank/ci.yml?label=CI" alt="GitHub Actions"></a>
+  <a href="https://github.com/Rupakrc9776/Smart_Water_Tank/actions"><img src="https://img.shields.io/github/actions/workflow/status/Rupakrc9776/Smart_Water_Tank/ci.yml?label=CI" alt="GitHub Actions"></a>
   <img src="https://img.shields.io/badge/Arduino-00979D?logo=arduino&logoColor=white" alt="Arduino">
   <img src="https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white" alt="Python 3.13">
   <img src="https://img.shields.io/badge/License-MIT-2ea44f" alt="MIT License">
@@ -232,7 +232,6 @@ Start with [Documentation/Troubleshooting.md](Documentation/Troubleshooting.md).
 | Rupak Chatterjee ([@Rupakrc9776](https://github.com/Rupakrc9776/)) | Hardware integration, Arduino programming, Python dashboard development, testing, and repository management |
 | Aranyak Das ([@Aranyak2006](https://github.com/Aranyak2006)) | Documentation and report preparation |
 
-Add collaborators through **Repository Settings -> Collaborators** and grant the least privilege required for the work.
 
 ## Academic Guidance
 
