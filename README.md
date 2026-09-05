@@ -229,14 +229,14 @@ Start with [Documentation/Troubleshooting.md](Documentation/Troubleshooting.md).
 
 | Contributor | Role |
 | --- | --- |
-| Dexter Ron | Hardware integration, Arduino programming, Python dashboard development, and testing |
-| Friend Name | Documentation, report preparation, and repository management |
+| Rupak Chatterjee ([@Rupakrc9776](https://github.com/Rupakrc9776/)) | Hardware integration, Arduino programming, Python dashboard development, testing, and repository management |
+| Aranyak Das ([@Aranyak2006](https://github.com/Aranyak2006)) | Documentation and report preparation |
 
 Add collaborators through **Repository Settings -> Collaborators** and grant the least privilege required for the work.
 
 ## Academic Guidance
 
-> **Mr. Kingsuk Majumdar**  
+> **Kingsuk Majumdar,Ph.D (Engg) ([@KingsukMajumdar](https://github.com/KingsukMajumdar))**
 > **Academic Guidance**
 >
 > **Role:**
