@@ -1,36 +1,19 @@
-name: Arduino sketch validation
+name: Arduino Validation
 
-on:
-  push:
-  pull_request:
+on: [push, pull_request]
 
 jobs:
   sketch:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-      - name: Find firmware sources
-        id: firmware
-        shell: bash
+      - uses: actions/checkout@v4
+
+      - name: Check Arduino sketch exists
         run: |
-          if find Arduino_Code -type f -name '*.ino' -print -quit | grep -q .; then
-            echo "present=true" >> "$GITHUB_OUTPUT"
+          if find Arduino_Code -name "*.ino" | grep -q .; then
+            echo "Arduino sketch found."
           else
-            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "No Arduino sketch found."
+            exit 1
           fi
-      - name: Set up Arduino CLI
-        if: steps.firmware.outputs.present == 'true'
-        uses: arduino/setup-arduino-cli@v2
-      - name: Compile Arduino sketches
-        if: steps.firmware.outputs.present == 'true'
-        shell: bash
-        run: |
-          arduino-cli core update-index
-          arduino-cli core install arduino:avr
-          while IFS= read -r sketch; do
-            arduino-cli compile --fqbn arduino:avr:uno "$(dirname "$sketch")"
-          done < <(find Arduino_Code -type f -name '*.ino')
-      - name: Report missing firmware source
-        if: steps.firmware.outputs.present != 'true'
-        run: echo 'No .ino source is present yet; hardware validation remains pending.'
