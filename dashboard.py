@@ -20,7 +20,7 @@ import serial
 from serial.tools import list_ports
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
-from dashboard_assets import COLORS, draw_pump, draw_tank
+from dashboard_assets import COLORS, draw_pump, draw_tank, rotate_pump, set_pump_color
 
 BASE_DIR = Path(__file__).resolve().parent
 CSV_PATH = BASE_DIR / "water_data.csv"
@@ -30,24 +30,42 @@ LOW_THRESHOLD = 30
 FULL_THRESHOLD = 90
 
 
-def parse_reading(line: str) -> tuple[float, float, str] | None:
-    """Parse distance, percentage, pump; also accept the old four-field format."""
+def parse_reading(line: str):
+    """Parse the five-field Arduino payload, retaining support for legacy payloads."""
     fields = [part.strip() for part in line.split(",")]
+    if len(fields) == 5:
+        time_value, distance, level, pump, mode = fields
+        return _parse_values(time_value, distance, level, pump, mode)
     if len(fields) == 3:
         distance, level, pump = fields
-    elif len(fields) == 4:
+        return _parse_values(datetime.now().strftime("%H:%M:%S"), distance, level, pump, "AUTO", legacy=True)
+    if len(fields) == 4:
         _, distance, level, pump = fields
-    else:
-        return None
+        return _parse_values(datetime.now().strftime("%H:%M:%S"), distance, level, pump, "AUTO", legacy=True)
+    return None
+
+
+def _parse_values(time_value, distance, level, pump, mode, legacy=False):
     try:
-        result = max(0.0, float(distance)), min(100.0, max(0.0, float(level))), pump.upper()
-    except ValueError:
+        parsed_time = float(time_value) if not legacy else time_value
+        result = (parsed_time, max(0.0, float(distance)), min(100.0, max(0.0, float(level))), pump.upper(), mode.upper())
+    except (TypeError, ValueError):
         return None
-    return result if result[2] in {"ON", "OFF"} else None
+    if result[3] not in {"ON", "OFF"} or result[4] not in {"AUTO", "MANUAL"}:
+        return None
+    return result[1:4] if legacy else result
+
+
+def normalize_reading(reading):
+    """Normalize legacy history rows to the current five-value dashboard shape."""
+    if len(reading) == 5:
+        return reading
+    distance, level, pump = reading
+    return datetime.now().strftime("%H:%M:%S"), distance, level, pump, "AUTO"
 
 
 class DataLogger:
-    headers = ["Time", "Distance_cm", "Water_Percent", "Pump"]
+    headers = ["Time", "Distance_cm", "Water_Percent", "Pump", "Mode"]
 
     def __init__(self, path: Path) -> None:
         self.path = path
@@ -63,16 +81,16 @@ class DataLogger:
         except (OSError, csv.Error):
             return []
 
-    def append(self, distance: float, level: float, pump: str) -> str:
-        stamp = datetime.now().strftime("%H:%M:%S")
+    def append(self, time_value, distance: float, level: float, pump: str, mode: str) -> str:
+        stamp = str(time_value)
         with self.path.open("a", newline="", encoding="utf-8") as file:
-            csv.writer(file).writerow((stamp, f"{distance:g}", f"{level:g}", pump))
+            csv.writer(file).writerow((stamp, f"{distance:g}", f"{level:g}", pump, mode))
         return stamp
 
 
 class SerialReader:
-    def __init__(self, port: str, on_reading, on_status) -> None:
-        self.port, self.on_reading, self.on_status = port.strip(), on_reading, on_status
+    def __init__(self, port: str, on_reading, on_status, on_alert) -> None:
+        self.port, self.on_reading, self.on_status, self.on_alert = port.strip(), on_reading, on_status, on_alert
         self.connection: serial.Serial | None = None
         self.running = True
         self.lock = threading.Lock()
@@ -109,9 +127,12 @@ class SerialReader:
                     reading = parse_reading(line)
                     if reading:
                         self.on_reading(reading)
+                    else:
+                        self.on_alert("SENSOR ERROR")
             except (serial.SerialException, OSError):
                 self.on_status(False, "Serial communication lost")
                 self.close()
+                time.sleep(1)
 
     @staticmethod
     def _find_port() -> str | None:
@@ -146,6 +167,9 @@ class Dashboard:
         self.level = self.distance = 0.0
         self.visual_level = 0.0
         self.pump = self.previous_pump = "OFF"
+        self.mode = "AUTO"
+        self.previous_mode = None
+        self.pump_angle = 0
         self.connected = False
         self.activation_count = 0
         self.alerts: deque[str] = deque(maxlen=8)
@@ -159,7 +183,7 @@ class Dashboard:
         self._style()
         self._build_ui()
         self._load_history()
-        self.reader = SerialReader(self.port_var.get(), self._queue_reading, self._queue_status)
+        self.reader = SerialReader(self.port_var.get(), self._queue_reading, self._queue_status, self._queue_alert)
         self.root.after(50, self._animate_level)
         self.root.after(1000, self._clock_tick)
         self.root.protocol("WM_DELETE_WINDOW", self.close)
@@ -204,16 +228,16 @@ class Dashboard:
         content.columnconfigure(0, weight=2); content.columnconfigure(1, weight=3); content.columnconfigure(2, weight=2); content.rowconfigure(0, weight=3); content.rowconfigure(1, weight=2)
         tank_panel = self._panel(content, "Tank visualization", 0, 0)
         self.tank_canvas = tk.Canvas(tank_panel, width=235, height=345, bg=COLORS["card"], highlightthickness=0); self.tank_canvas.pack(fill="both", expand=True)
-        self.tank_items = draw_tank(self.tank_canvas); self.tank_percent = self.tank_canvas.create_text(117, 168, text="0%", fill=COLORS["text"], font=("Segoe UI", 25, "bold")); self.tank_distance = self.tank_canvas.create_text(117, 333, text="Distance -- cm", fill=COLORS["muted"], font=("Segoe UI", 10))
+        self.tank_items = draw_tank(self.tank_canvas); self.tank_percent = self.tank_canvas.create_text(117, 150, text="0%", fill=COLORS["text"], font=("Segoe UI", 25, "bold")); self.tank_distance = self.tank_canvas.create_text(117, 190, text="Distance -- cm", fill=COLORS["muted"], font=("Segoe UI", 10))
         gauge_panel = self._panel(content, "Circular level gauge", 1, 0)
-        self.gauge_canvas = tk.Canvas(gauge_panel, width=350, height=290, bg=COLORS["card"], highlightthickness=0); self.gauge_canvas.pack(fill="both", expand=True); self.gauge_canvas.bind("<Configure>", self._resize_gauge)
+        self.gauge_canvas = tk.Canvas(gauge_panel, width=350, height=300, bg=COLORS["card"], highlightthickness=0); self.gauge_canvas.pack(fill="both", expand=True); self.gauge_canvas.bind("<Configure>", self._resize_gauge)
         self.gauge_track = self.gauge_canvas.create_arc(45, 20, 305, 280, start=210, extent=120, style="arc", outline=COLORS["line"], width=18); self.gauge_arc = self.gauge_canvas.create_arc(45, 20, 305, 280, start=210, extent=1, style="arc", outline=COLORS["accent"], width=18); self.gauge_value = self.gauge_canvas.create_text(175, 139, text="0%", fill=COLORS["text"], font=("Segoe UI", 30, "bold")); ttk.Label(gauge_panel, text="SENSOR RANGE  |  LIVE PERCENTAGE", style="Muted.TLabel").pack()
         pump_panel = self._panel(content, "Pump control", 2, 0)
         self.pump_canvas = tk.Canvas(pump_panel, width=190, height=100, bg=COLORS["card"], highlightthickness=0); self.pump_canvas.pack(pady=4); self.pump_icon = draw_pump(self.pump_canvas)
         self.pump_label = ttk.Label(pump_panel, text="PUMP OFF", style="Kpi.TLabel", foreground=COLORS["muted"]); self.pump_label.pack(); self.relay_label = ttk.Label(pump_panel, text="RELAY DEACTIVATED", style="Muted.TLabel"); self.relay_label.pack(pady=3)
         self.buzzer_label = ttk.Label(pump_panel, text="●  BUZZER STANDBY", style="Muted.TLabel"); self.buzzer_label.pack(pady=3)
         self.stats_label = ttk.Label(pump_panel, text="ACTIVATIONS 0  |  LAST UPDATE --:--:--", style="Muted.TLabel"); self.stats_label.pack(pady=3)
-        mode = ttk.Frame(pump_panel); mode.pack(pady=10); ttk.Label(mode, text="CONTROL MODE", style="Muted.TLabel").pack(side="left", padx=5); ttk.Combobox(mode, textvariable=self.mode_var, values=("AUTO", "MANUAL"), state="readonly", width=8).pack(side="left")
+        mode_card = ttk.Frame(pump_panel, style="Panel.TFrame", padding=(10, 6)); mode_card.pack(fill="x", pady=(8, 6)); ttk.Label(mode_card, text="CONTROL MODE", style="Muted.TLabel").pack(); self.mode_label = ttk.Label(mode_card, text="AUTO", style="Kpi.TLabel", foreground=COLORS["success"]); self.mode_label.pack()
         self.led_labels = {}
         for name in ("RED", "YELLOW", "GREEN"):
             label = ttk.Label(pump_panel, text=f"●  {name} LED", foreground=COLORS["muted"], font=("Segoe UI", 10, "bold")); label.pack(anchor="w", pady=2); self.led_labels[name] = label
@@ -226,9 +250,14 @@ class Dashboard:
 
     def _load_history(self) -> None:
         for row in self.logger.read_history()[-30:]:
-            try: self.readings.append((float(row["Distance_cm"]), float(row["Water_Percent"]), row["Pump"]))
+            try: self.readings.append((row.get("Time", ""), float(row["Distance_cm"]), float(row["Water_Percent"]), row["Pump"].upper(), row.get("Mode", "AUTO").upper()))
             except (KeyError, TypeError, ValueError): continue
-        if self.readings: self._apply_reading(self.readings[-1], False)
+        if self.readings:
+            history = list(self.readings)
+            self.activation_count = sum(previous[3] == "OFF" and current[3] == "ON" for previous, current in zip(history, history[1:]))
+            self.previous_pump = history[-1][3]
+            self.previous_mode = history[-1][4]
+            self._apply_reading(self.readings[-1], False)
         else: self._refresh_graph()
 
     def _queue_reading(self, reading) -> None:
@@ -243,42 +272,61 @@ class Dashboard:
         if reading:
             self._apply_reading(reading, True)
     def _queue_status(self, connected: bool, message: str) -> None: self.root.after(0, lambda: self._set_status(connected, message))
+    def _queue_alert(self, message: str) -> None: self.root.after(0, lambda: self._add_alert(message))
     def _set_status(self, connected: bool, message: str) -> None:
         self.connected = connected; self.status_var.set("CONNECTED" if connected else "DISCONNECTED"); self.status_detail.set(message)
         self.connection_dot.configure(foreground=COLORS["success"] if connected else COLORS["danger"])
+        if not connected: self._add_alert("CONNECTION LOST")
         if connected and message.startswith("Connected to "):
             self.port_var.set(message.removeprefix("Connected to "))
 
     def _apply_reading(self, reading, log: bool) -> None:
-        self.distance, self.level, self.pump = reading; self.readings.append(reading)
+        reading = normalize_reading(reading)
+        time_value, self.distance, self.level, self.pump, self.mode = reading
+        self.readings.append(reading)
         if log: self.logger.append(*reading)
         if self.previous_pump == "OFF" and self.pump == "ON": self.activation_count += 1
-        self.previous_pump = self.pump; self.stats_label.configure(text=f"ACTIVATIONS {self.activation_count}  |  LAST UPDATE {datetime.now():%H:%M:%S}"); self._update_visuals()
+        mode_changed = self.previous_mode is not None and self.previous_mode != self.mode
+        if self.previous_mode is None or mode_changed:
+            self._add_alert(f"{self.mode} MODE ENABLED")
+        if mode_changed:
+            self._animate_mode_change()
+        self.previous_pump = self.pump; self.previous_mode = self.mode
+        self.stats_label.configure(text=f"ACTIVATIONS {self.activation_count}  |  LAST UPDATE {datetime.now():%H:%M:%S}"); self._update_visuals()
 
     def _update_visuals(self) -> None:
         draw_tank(self.tank_canvas, self.tank_items, self.visual_level); self.tank_canvas.itemconfigure(self.tank_percent, text=f"{self.level:.0f}%"); self.tank_canvas.itemconfigure(self.tank_distance, text=f"Distance {self.distance:.1f} cm")
         color = COLORS["success"] if self.level >= FULL_THRESHOLD else COLORS["warning"] if self.level >= LOW_THRESHOLD else COLORS["danger"]; self.gauge_canvas.itemconfigure(self.gauge_arc, extent=max(1, 120 * self.level / 100), outline=color); self.gauge_canvas.itemconfigure(self.gauge_value, text=f"{self.level:.0f}%")
-        on = self.pump == "ON"; self.pump_label.configure(text=f"PUMP {'ON' if on else 'OFF'}", foreground=COLORS["success"] if on else COLORS["muted"]); self.relay_label.configure(text=f"RELAY {'ACTIVATED' if on else 'DEACTIVATED'}"); self.pump_canvas.itemconfigure(self.pump_icon, fill=COLORS["success"] if on else COLORS["muted"])
+        on = self.pump == "ON"; self.pump_label.configure(text=f"PUMP {'ON' if on else 'OFF'}", foreground=COLORS["success"] if on else COLORS["muted"]); self.relay_label.configure(text=f"RELAY {'ACTIVATED' if on else 'DEACTIVATED'}"); set_pump_color(self.pump_canvas, self.pump_icon, COLORS["success"] if on else COLORS["muted"])
         low = self.level < LOW_THRESHOLD; self.buzzer_label.configure(text=f"●  BUZZER {'WARNING ACTIVE' if low else 'STANDBY'}", foreground=COLORS["danger"] if low else COLORS["muted"])
         active = "RED" if self.level < LOW_THRESHOLD else "YELLOW" if self.level < FULL_THRESHOLD else "GREEN"
         led_colors = {"RED": COLORS["danger"], "YELLOW": COLORS["warning"], "GREEN": COLORS["success"]}
         for name, label in self.led_labels.items(): label.configure(foreground=led_colors[name] if name == active else COLORS["muted"])
-        values = [item[1] for item in self.readings]; self.kpi_values["level"].set(f"{self.level:.0f}%"); self.kpi_values["pump"].set("ON" if on else "OFF"); self.kpi_values["avg"].set(f"{sum(values) / len(values):.1f}%" if values else "--"); self.kpi_values["max"].set(f"{max(values):.0f}%" if values else "--"); self.kpi_values["min"].set(f"{min(values):.0f}%" if values else "--")
-        alert = "LOW WATER / BUZZER ACTIVE" if self.level < LOW_THRESHOLD else "TANK FULL" if self.level >= FULL_THRESHOLD else ("PUMP RUNNING" if on else "PUMP STOPPED"); self.kpi_values["alert"].set(alert); self._add_alert(alert); self._schedule_graph_refresh()
+        mode_color = COLORS["success"] if self.mode == "AUTO" else COLORS["manual"]; self.mode_label.configure(text=self.mode, foreground=mode_color); self.mode_var.set(self.mode)
+        values = [item[2] for item in self.readings]; self.kpi_values["level"].set(f"{self.level:.0f}%"); self.kpi_values["pump"].set("ON" if on else "OFF"); self.kpi_values["avg"].set(f"{sum(values) / len(values):.1f}%" if values else "--"); self.kpi_values["max"].set(f"{max(values):.0f}%" if values else "--"); self.kpi_values["min"].set(f"{min(values):.0f}%" if values else "--")
+        alert = "LOW WATER LEVEL" if self.level < LOW_THRESHOLD else "TANK FULL" if self.level >= FULL_THRESHOLD else ("PUMP RUNNING" if on else "PUMP STOPPED"); self.kpi_values["alert"].set(alert); self._add_alert(alert); self._schedule_graph_refresh()
 
     def _animate_level(self) -> None:
         self.visual_level += (self.level - self.visual_level) * 0.18
         if abs(self.level - self.visual_level) < 0.1: self.visual_level = self.level
         draw_tank(self.tank_canvas, self.tank_items, self.visual_level)
         self.gauge_canvas.itemconfigure(self.gauge_arc, extent=max(1, 120 * self.visual_level / 100))
+        if self.pump == "ON":
+            self.pump_angle = (self.pump_angle + 18) % 360
+            rotate_pump(self.pump_canvas, self.pump_icon, self.pump_angle)
         self.root.after(50, self._animate_level)
 
     def _resize_gauge(self, event) -> None:
-        size = max(180, min(event.width - 36, event.height - 22))
-        left, top = (event.width - size) / 2, (event.height - size) / 2
+        size = max(160, min(event.width - 48, event.height - 48))
+        left = (event.width - size) / 2
+        top = max(8, (event.height - size - 24) / 2)
         box = (left, top, left + size, top + size)
         for item in (self.gauge_track, self.gauge_arc): self.gauge_canvas.coords(item, *box)
-        self.gauge_canvas.coords(self.gauge_value, event.width / 2, top + size / 2)
+        self.gauge_canvas.coords(self.gauge_value, event.width / 2, top + size * 0.52)
+
+    def _animate_mode_change(self) -> None:
+        self.mode_label.configure(font=("Segoe UI", 25, "bold"))
+        self.root.after(220, lambda: self.mode_label.configure(font=("Segoe UI", 22, "bold")))
 
     def _add_alert(self, text: str) -> None:
         if not self.alerts or self.alerts[-1].split("  |  ")[-1] != text: self.alerts.append(f"{datetime.now():%H:%M:%S}  |  {text}")
@@ -292,7 +340,7 @@ class Dashboard:
 
     def _refresh_graph(self) -> None:
         self._graph_refresh_queued = False
-        values = [item[1] for item in self.readings]
+        values = [item[2] for item in self.readings]
         self.axis.clear()
         self.axis.set_facecolor(COLORS["card"])
         self.axis.set_ylim(0, 100)

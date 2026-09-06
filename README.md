@@ -46,21 +46,22 @@ The **SMART HOME WATER TANK MONITORING AND AUTOMATIC CONTROL SYSTEM WITH STATIST
 The verified serial payload accepted by the dashboard is:
 
 ```text
-<distance_cm>,<water_percent>,<pump_state>
+<time>,<distance_cm>,<water_percent>,<pump_status>,<mode>
 ```
 
-For backward compatibility, the parser also accepts a four-field payload with a leading field. `pump_state` must be `ON` or `OFF`; water percentage is clamped to 0-100.
+For example, `12,5,90,OFF,AUTO` reports the Arduino reading time in seconds, sensor distance, water percentage, pump status, and current control mode. `pump_status` must be `ON` or `OFF`, `mode` must be `AUTO` or `MANUAL`, and water percentage is clamped to 0-100. The parser also safely ignores malformed lines and retains compatibility with older payloads.
 
 ## Key Features
 
 - Live water-level percentage and sensor distance.
 - Automatic or manually selected control-mode indicator.
 - Relay and pump status visualization.
+- Automatic Pump Control through the Arduino relay path.
 - Red, yellow, and green operating-state indicators.
 - Low-water buzzer alert below 30%.
 - Full-tank state at or above 90%.
 - Serial auto-discovery with manual COM-port override.
-- Append-only CSV logging with timestamp, distance, percentage, and pump state.
+- Append-only CSV logging with time, distance, percentage, pump state, and AUTO/MANUAL mode.
 - Rolling 30-reading trend graph, CSV export, graph export, and dashboard screenshots.
 - Average, maximum, minimum, and pump activation KPIs.
 
@@ -95,7 +96,7 @@ For backward compatibility, the parser also accepts a four-field payload with a 
 ```mermaid
 flowchart LR
     Sensor[HC-SR04 ultrasonic sensor] --> Arduino[Arduino UNO controller]
-    Buttons[Set and Manual/Auto buttons] --> Arduino
+    Controls[SET button and AUTO rocker switch] --> Arduino
     Arduino --> Indicators[LCD, LEDs, buzzer]
     Arduino --> Relay[Relay module]
     Relay --> Pump[Water pump]
@@ -118,7 +119,8 @@ See [Documentation/Architecture.md](Documentation/Architecture.md) for the compl
 | 16x2 I2C LCD | Local level and status display |
 | Active buzzer | Low-water warning |
 | Red, yellow, green LEDs | Low, intermediate, and full-state indication |
-| Push buttons | Setpoint and manual/automatic mode input |
+| SET button | Setpoint input |
+| AUTO rocker switch | AUTO/MANUAL mode input |
 | Breadboard and jumper wires | Prototyping and interconnection |
 
 Detailed wiring, calibration, and safety guidance is in [Documentation/Hardware.md](Documentation/Hardware.md).
@@ -141,8 +143,8 @@ Detailed wiring, calibration, and safety guidance is in [Documentation/Hardware.
 | D8 | Red LED | Low water |
 | D9 | Yellow LED | Intermediate level |
 | D10 | Set button | Setpoint input |
-| D11 | Green LED | Full/healthy level |
-| D12 | Manual / Auto button | Control-mode input |
+| D11 | AUTO rocker switch | AUTO/MANUAL mode input |
+| D12 | Green LED | Full/healthy level |
 | D13 | Relay module | Pump switching output |
 
 Power, ground, I2C LCD pins, and pump-side isolation must be wired according to the module datasheets. Do not connect mains voltage to a breadboard.

@@ -29,7 +29,7 @@ def main() -> None:
     path = Path(CSV_PATH)
     if not path.exists() or path.stat().st_size == 0:
         with path.open("w", newline="", encoding="utf-8") as file:
-            csv.writer(file).writerow(("Time", "Distance_cm", "Water_Percent", "Pump"))
+            csv.writer(file).writerow(("Time", "Distance_cm", "Water_Percent", "Pump", "Mode"))
     print(f"Logging {port} at {BAUD_RATE} baud. Press Ctrl+C to stop.")
     connection = None
     try:
@@ -38,11 +38,14 @@ def main() -> None:
             reading = parse_reading(connection.readline().decode("utf-8", errors="ignore").strip())
             if reading is None:
                 continue
-            distance, level, pump = reading
-            stamp = datetime.now().strftime("%H:%M:%S")
+            if len(reading) == 5:
+                stamp, distance, level, pump, mode = reading
+            else:
+                distance, level, pump = reading
+                stamp, mode = datetime.now().strftime("%H:%M:%S"), "AUTO"
             with path.open("a", newline="", encoding="utf-8") as file:
-                csv.writer(file).writerow((stamp, f"{distance:g}", f"{level:g}", pump))
-            print(f"{stamp} | {level:.0f}% | Pump {pump} | Distance {distance:.1f} cm")
+                csv.writer(file).writerow((stamp, f"{distance:g}", f"{level:g}", pump, mode))
+            print(f"{stamp} | {level:.0f}% | Pump {pump} | Mode {mode} | Distance {distance:.1f} cm")
     except serial.SerialException as error:
         print(f"Serial connection failed: {error}")
     except KeyboardInterrupt:
