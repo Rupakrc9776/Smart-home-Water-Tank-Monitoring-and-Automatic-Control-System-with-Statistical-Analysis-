@@ -75,7 +75,7 @@ For example, `12,5,90,OFF,AUTO` reports the Arduino reading time in seconds, sen
 </figure>
 
 <figure>
-  <img src="assets/circuit-diagram.png" alt="Tinkercad-style circuit diagram for the smart water tank controller" width="720">
+  <img src="assets/circuit-diagram.png" alt="Circuit diagram for the smart water tank controller" width="720">
   <figcaption><strong>Tinkercad-Style Circuit Diagram</strong></figcaption>
 </figure>
 
