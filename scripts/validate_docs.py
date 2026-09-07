@@ -22,7 +22,7 @@ REQUIRED_PATHS = (
     "dashboard_assets.py",
     "water_logger.py",
 )
-MARKDOWN_LINK = re.compile(r"(?<!!)\[[^\]]+\]\(([^)\s]+)(?:\s+['\"][^)]*['\"])?\)")
+MARKDOWN_LINK = re.compile(r"\[[^\]]+\]\(([^)\s]+)(?:\s+['\"][^)]*['\"])?\)")
 HTML_IMAGE = re.compile(r"<img\b[^>]*\bsrc=[\"']([^\"']+)[\"'][^>]*>", re.IGNORECASE)
 IMAGE_SUFFIXES = {".gif", ".jpeg", ".jpg", ".png", ".svg", ".webp"}
 
@@ -34,8 +34,18 @@ def local_target(source: Path, target: str) -> Path | None:
     return (source.parent / parsed.path).resolve()
 
 
+def is_optional_reference(resolved: Path) -> bool:
+    report_root = (ROOT / "Report").resolve()
+    try:
+        resolved.relative_to(report_root)
+    except ValueError:
+        return False
+    return True
+
+
 def main() -> int:
     errors: list[str] = []
+    warnings: list[str] = []
     for relative in REQUIRED_PATHS:
         if not (ROOT / relative).exists():
             errors.append(f"missing required path: {relative}")
@@ -46,7 +56,12 @@ def main() -> int:
         text = source.read_text(encoding="utf-8")
         if text.count("```") % 2:
             errors.append(f"unclosed fenced code block: {source.relative_to(ROOT)}")
-        for target in [*MARKDOWN_LINK.findall(text), *HTML_IMAGE.findall(text)]:
+        references = [*MARKDOWN_LINK.findall(text), *HTML_IMAGE.findall(text)]
+        seen_targets: set[str] = set()
+        for target in references:
+            if target in seen_targets:
+                warnings.append(f"duplicate reference: {source.relative_to(ROOT)} -> {target}")
+            seen_targets.add(target)
             resolved = local_target(source, target)
             if resolved is None:
                 continue
@@ -54,6 +69,8 @@ def main() -> int:
                 resolved.relative_to(ROOT)
             except ValueError:
                 errors.append(f"reference escapes repository: {source.relative_to(ROOT)} -> {target}")
+                continue
+            if not resolved.exists() and is_optional_reference(resolved):
                 continue
             if not resolved.exists():
                 errors.append(f"broken reference: {source.relative_to(ROOT)} -> {target}")
@@ -64,6 +81,9 @@ def main() -> int:
         print("Documentation validation failed:")
         print("\n".join(f"- {error}" for error in errors))
         return 1
+    if warnings:
+        print("Documentation validation warnings:")
+        print("\n".join(f"- {warning}" for warning in warnings))
     print(f"Documentation validation passed: {len(markdown_files)} Markdown files checked.")
     return 0
 

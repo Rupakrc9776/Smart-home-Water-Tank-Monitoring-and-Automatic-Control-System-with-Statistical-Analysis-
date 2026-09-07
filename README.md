@@ -69,23 +69,28 @@ For example, `12,5,90,OFF,AUTO` reports the Arduino reading time in seconds, sen
 
 <div align="center">
 
-<figure>
-  <img src="assets/hardware-setup.jpg" alt="Hardware prototype with Arduino UNO and connected water tank components" width="720">
+<figure align="center" style="margin: 0 auto 24px; text-align: center;">
+  <img src="assets/hardware-setup.jpg" alt="Hardware prototype with Arduino UNO and connected water tank components" style="display: block; width: 100%; max-width: 720px; height: auto; margin: 0 auto 8px;">
   <figcaption><strong>Hardware Prototype</strong></figcaption>
 </figure>
 
+<<<<<<< HEAD
 <figure>
   <img src="assets/circuit-diagram.png" alt="Circuit diagram for the smart water tank controller" width="720">
+=======
+<figure align="center" style="margin: 0 auto 24px; text-align: center;">
+  <img src="assets/circuit-diagram.png" alt="Tinkercad-style circuit diagram for the smart water tank controller" style="display: block; width: 100%; max-width: 720px; height: auto; margin: 0 auto 8px;">
+>>>>>>> 17be2fd (Workflow Validation)
   <figcaption><strong>Tinkercad-Style Circuit Diagram</strong></figcaption>
 </figure>
 
-<figure>
-  <img src="assets/dashboard-ui.png" alt="Live Python dashboard for water tank monitoring" width="720">
+<figure align="center" style="margin: 0 auto 24px; text-align: center;">
+  <img src="assets/dashboard-ui.png" alt="Live Python dashboard for water tank monitoring" style="display: block; width: 100%; max-width: 720px; height: auto; margin: 0 auto 8px;">
   <figcaption><strong>Live Python Dashboard</strong></figcaption>
 </figure>
 
-<figure>
-  <img src="assets/water_level_graph.png" alt="Statistical water-level analysis graph" width="720">
+<figure align="center" style="margin: 0 auto 24px; text-align: center;">
+  <img src="assets/water_level_graph.png" alt="Statistical water-level analysis graph" style="display: block; width: 100%; max-width: 720px; height: auto; margin: 0 auto 8px;">
   <figcaption><strong>Statistical Analysis Graph</strong></figcaption>
 </figure>
 
