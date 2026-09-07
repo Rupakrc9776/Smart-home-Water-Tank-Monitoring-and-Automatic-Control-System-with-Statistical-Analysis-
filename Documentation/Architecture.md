@@ -24,8 +24,8 @@ flowchart LR
     UNO -->|D2 trigger / D3 echo| HCSR04[HC-SR04]
     UNO -->|I2C| LCD[16x2 LCD]
     UNO -->|D7| Buzzer[Active buzzer]
-    UNO -->|D8 D9 D11| LEDs[Status LEDs]
-    UNO -->|D10 D12| Buttons[Push buttons]
+    UNO -->|D8 D9 D12| LEDs[Status LEDs]
+    UNO -->|D10 D11| Buttons[Set and AUTO/MANUAL inputs]
     UNO -->|D13| Relay[Relay input]
     Relay -. isolated load circuit .-> Pump[Pump]
 ```

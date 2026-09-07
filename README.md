@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Rupakrc9776/Smart-home-Water-Tank-Monitoring-and-Automatic-Control-System-with-Statistical-Analysis-/actions"><img src="https://img.shields.io/github/actions/workflow/status/Rupakrc9776/Smart-home-Water-Tank-Monitoring-and-Automatic-Control-System-with-Statistical-Analysis-/ci.yml?label=CI" alt="GitHub Actions"></a>
+  <a href="https://github.com/Rupakrc9776/Smart-home-Water-Tank-Monitoring-and-Automatic-Control-System-with-Statistical-Analysis-/actions/workflows/python-validation.yml"><img src="https://img.shields.io/github/actions/workflow/status/Rupakrc9776/Smart-home-Water-Tank-Monitoring-and-Automatic-Control-System-with-Statistical-Analysis-/python-validation.yml?label=Python%20CI" alt="Python validation workflow"></a>
   <img src="https://img.shields.io/badge/Arduino-00979D?logo=arduino&logoColor=white" alt="Arduino">
   <img src="https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white" alt="Python 3.13">
   <img src="https://img.shields.io/badge/License-MIT-2ea44f" alt="MIT License">
@@ -158,14 +158,14 @@ Power, ground, I2C LCD pins, and pump-side isolation must be wired according to 
 |-- Documentation/             User, hardware, software, and test documentation
 |-- Python_Dashboard/           Python application guide
 |-- Report/                     Submission/report assets
-|-- Screenshots/                Dashboard captures
+|-- screenshots/                Dashboard captures
 |-- assets/                     Dashboard and repository media
 |-- .github/                    Workflows, templates, and security policy
 |-- dashboard.py                Desktop dashboard
 |-- dashboard_assets.py         Dashboard drawing helpers and color system
 |-- water_logger.py             Headless serial logger
 |-- water_data.csv              Sample/runtime data file
-|-- water_level_graph.png       Exported graph example
+|-- assets/water_level_graph.png Exported graph example
 `-- requirements.txt            Python dependencies
 ```
 
@@ -186,7 +186,7 @@ For a complete setup sequence, see [Documentation/Installation.md](Documentation
 
 ## Arduino Setup
 
-The expected firmware contract and pin assignment are documented in [Documentation/Hardware.md](Documentation/Hardware.md). Open the project sketch in Arduino IDE, select **Arduino Uno**, choose the detected COM port, and upload. The firmware must emit the serial payload documented above at 9600 baud. The current workspace does not include the source sketch named in the original project brief, so the firmware source should be added under `Arduino_Code/` before publishing a hardware release.
+The expected firmware contract and pin assignment are documented in [Documentation/Hardware.md](Documentation/Hardware.md). Open [Arduino_Code/Smart_Water_Tank.ino](Arduino_Code/Smart_Water_Tank.ino) in Arduino IDE, select **Arduino Uno**, choose the detected COM port, and upload. The firmware emits the serial payload documented above at 9600 baud.
 
 ## Python Setup
 

@@ -22,7 +22,7 @@ The dashboard is launched with `python dashboard.py` and is designed for an oper
 - **CONTROL MODE**: dashboard-side mode label with `AUTO` and `MANUAL` choices. Physical control behavior remains firmware-owned.
 - **EXPORT CSV**: copies the current CSV to a chosen destination.
 - **SAVE GRAPH PNG**: exports the current trend graph.
-- **SCREENSHOT**: captures the dashboard window under `Screenshots/`.
+- **SCREENSHOT**: captures the dashboard window under `screenshots/`.
 - **CLEAR GRAPH**: clears the current rolling graph history in memory; it does not delete CSV data.
 - **EXIT**: stops serial handling and closes the window.
 

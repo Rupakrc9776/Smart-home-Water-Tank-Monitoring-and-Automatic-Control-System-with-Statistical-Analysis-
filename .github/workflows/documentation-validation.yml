@@ -1,25 +1,25 @@
 name: Documentation Validation
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: documentation-validation-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  docs:
+  validate:
+    name: Validate documentation and repository paths
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
 
-      - name: Check required files
-        run: |
-          test -f README.md
-          test -f LICENSE
-          test -f CONTRIBUTING.md
-          test -f SECURITY.md
-          test -f Documentation/Architecture.md
-          test -f Documentation/Installation.md
-          test -f Documentation/Hardware.md
-          test -f Documentation/Software.md
-          test -f Documentation/Dashboard.md
-          test -f Documentation/Statistical_Analysis.md
-          test -f Documentation/Testing.md
-          test -f Documentation/Future_Scope.md
+      - name: Validate local links and referenced media
+        run: python3 scripts/validate_docs.py

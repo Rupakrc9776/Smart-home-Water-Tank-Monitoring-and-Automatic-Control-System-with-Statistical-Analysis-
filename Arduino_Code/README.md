@@ -16,6 +16,6 @@ Example:
 15,25,ON
 ```
 
-The workspace currently contains the Python controller interface and documentation but not the original `.ino` source listed in the project brief. Add the working firmware here before publishing a hardware release; do not infer a production wiring or pump-safety policy from this documentation alone.
+The working UNO firmware is [Smart_Water_Tank.ino](Smart_Water_Tank.ino). Do not infer a production wiring or pump-safety policy from this documentation alone.
 
 See [../Documentation/Hardware.md](../Documentation/Hardware.md) for the verified pin assignment and calibration guidance.

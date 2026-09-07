@@ -25,8 +25,8 @@
 | D8 | Red LED |
 | D9 | Yellow LED |
 | D10 | Set button |
-| D11 | Green LED |
-| D12 | Manual / Auto button |
+| D11 | AUTO / MANUAL mode switch |
+| D12 | Green LED |
 | D13 | Relay module input |
 
 The 16x2 I2C LCD uses the Arduino I2C pins, normally A4/SDA and A5/SCL on an UNO. Confirm the LCD module's pinout and address before applying power.
