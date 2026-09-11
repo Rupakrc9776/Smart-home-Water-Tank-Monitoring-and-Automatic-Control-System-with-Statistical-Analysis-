@@ -233,7 +233,7 @@ Dashboard widgets and operator workflows are described in [Documentation/Dashboa
   </a>
 </p>
 <p align="center"><strong>Scan this QR Code to watch the Working Prototype Video.</strong><br>
-The QR currently opens Google Drive. Replace the destination with the shared video URL before publishing the prototype recording.</p>
+</p>
 
 ## Statistical Analysis
 
