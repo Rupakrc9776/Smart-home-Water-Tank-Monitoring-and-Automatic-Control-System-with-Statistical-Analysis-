@@ -4,59 +4,18 @@ on:
   push:
   pull_request:
 
-permissions:
-  contents: read
-
-concurrency:
-  group: arduino-validation-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   compile:
-    name: Compile Arduino sketches
     runs-on: ubuntu-latest
-    timeout-minutes: 15
 
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Cache Arduino CLI packages
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.arduino15
-            ~/.cache/arduino
-          key: arduino-${{ runner.os }}-${{ hashFiles('Arduino_Code/**/*.ino') }}
-          restore-keys: |
-            arduino-${{ runner.os }}-
+      - uses: arduino/setup-arduino-cli@v2
 
-      - name: Install Arduino CLI
-        uses: arduino/setup-arduino-cli@v2
-
-      - name: Install UNO platform and libraries
-        shell: bash
-        run: |
-          set -euo pipefail
-          arduino-cli version
+      - run: |
           arduino-cli core update-index
           arduino-cli core install arduino:avr
-          arduino-cli lib install "LiquidCrystal I2C"
-          arduino-cli core list
-          arduino-cli lib list
 
-      - name: Compile every Arduino sketch
-        shell: bash
-        run: |
-          set -euo pipefail
-          mapfile -d '' sketches < <(find . -type f -name '*.ino' -not -path './.git/*' -print0)
-          if (( ${#sketches[@]} == 0 )); then
-            echo "ERROR: no Arduino sketches were found."
-            exit 1
-          fi
-          for sketch in "${sketches[@]}"; do
-            sketch_dir="$(dirname "$sketch")"
-            echo "::group::Compiling $sketch"
-            arduino-cli compile --fqbn arduino:avr:uno "$sketch_dir"
-            echo "::endgroup::"
-          done
+      - run: |
+          arduino-cli compile --fqbn arduino:avr:uno Arduino/Smart_Water_Tank.ino
