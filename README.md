@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Rupakrc9776/Smart-home-Water-Tank-Monitoring-and-Automatic-Control-System-with-Statistical-Analysis-/actions/workflows/python-validation.yml"><img src="https://img.shields.io/github/actions/workflow/status/Rupakrc9776/Smart-home-Water-Tank-Monitoring-and-Automatic-Control-System-with-Statistical-Analysis-/python-validation.yml?label=Python%20CI" alt="Python validation workflow"></a>
+  <a href="https://github.com/Rupakrc9776/Smart-home-Water-Tank-Monitoring-and-Automatic-Control-System-with-Statistical-Analysis-">
   <img src="https://img.shields.io/badge/Arduino-00979D?logo=arduino&logoColor=white" alt="Arduino">
   <img src="https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white" alt="Python 3.13">
   <img src="https://img.shields.io/badge/License-MIT-2ea44f" alt="MIT License">
