@@ -2,20 +2,26 @@ name: Arduino Validation
 
 on:
   push:
+    branches: [main]
   pull_request:
+    branches: [main]
 
 jobs:
   compile:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - uses: arduino/setup-arduino-cli@v2
+      - name: Setup Arduino CLI
+        uses: arduino/setup-arduino-cli@v2
 
-      - run: |
+      - name: Install Arduino AVR Core
+        run: |
           arduino-cli core update-index
           arduino-cli core install arduino:avr
 
-      - run: |
-          arduino-cli compile --fqbn arduino:avr:uno Arduino/Smart_Water_Tank.ino
+      - name: Compile Arduino Sketch
+        run: |
+          arduino-cli compile --fqbn arduino:avr:uno Arduino_Code
