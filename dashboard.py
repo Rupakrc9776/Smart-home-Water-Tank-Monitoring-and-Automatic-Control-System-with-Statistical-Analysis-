@@ -225,7 +225,7 @@ class Dashboard:
             ttk.Label(card, textvariable=self.kpi_values[key], style="Kpi.TLabel", foreground=COLORS[color]).pack(anchor="w", pady=(5, 0))
 
         content = ttk.Frame(self.root, padding=(16, 2)); content.pack(fill="both", expand=True)
-        content.columnconfigure(0, weight=2); content.columnconfigure(1, weight=3); content.columnconfigure(2, weight=2); content.rowconfigure(0, weight=3); content.rowconfigure(1, weight=2)
+        content.columnconfigure(0, weight=1, uniform="main-panels"); content.columnconfigure(1, weight=1, uniform="main-panels"); content.columnconfigure(2, weight=1, uniform="main-panels"); content.rowconfigure(0, weight=3); content.rowconfigure(1, weight=2)
         tank_panel = self._panel(content, "Tank visualization", 0, 0)
         self.tank_canvas = tk.Canvas(tank_panel, width=235, height=345, bg=COLORS["card"], highlightthickness=0); self.tank_canvas.pack(fill="both", expand=True)
         self.tank_items = draw_tank(self.tank_canvas); self.tank_percent = self.tank_canvas.create_text(117, 150, text="0%", fill=COLORS["text"], font=("Segoe UI", 25, "bold")); self.tank_distance = self.tank_canvas.create_text(117, 190, text="Distance -- cm", fill=COLORS["muted"], font=("Segoe UI", 10))
@@ -233,7 +233,7 @@ class Dashboard:
         self.gauge_canvas = tk.Canvas(gauge_panel, width=350, height=300, bg=COLORS["card"], highlightthickness=0); self.gauge_canvas.pack(fill="both", expand=True); self.gauge_canvas.bind("<Configure>", self._resize_gauge)
         self.gauge_track = self.gauge_canvas.create_arc(45, 20, 305, 280, start=210, extent=120, style="arc", outline=COLORS["line"], width=18); self.gauge_arc = self.gauge_canvas.create_arc(45, 20, 305, 280, start=210, extent=1, style="arc", outline=COLORS["accent"], width=18); self.gauge_value = self.gauge_canvas.create_text(175, 139, text="0%", fill=COLORS["text"], font=("Segoe UI", 30, "bold")); ttk.Label(gauge_panel, text="SENSOR RANGE  |  LIVE PERCENTAGE", style="Muted.TLabel").pack()
         pump_panel = self._panel(content, "Pump control", 2, 0)
-        self.pump_canvas = tk.Canvas(pump_panel, width=190, height=100, bg=COLORS["card"], highlightthickness=0); self.pump_canvas.pack(pady=4); self.pump_icon = draw_pump(self.pump_canvas)
+        self.pump_canvas = tk.Canvas(pump_panel, width=190, height=100, bg=COLORS["card"], highlightthickness=0); self.pump_canvas.pack(pady=4, anchor="center"); self.pump_icon = draw_pump(self.pump_canvas)
         self.pump_label = ttk.Label(pump_panel, text="PUMP OFF", style="Kpi.TLabel", foreground=COLORS["muted"]); self.pump_label.pack(); self.relay_label = ttk.Label(pump_panel, text="RELAY DEACTIVATED", style="Muted.TLabel"); self.relay_label.pack(pady=3)
         self.buzzer_label = ttk.Label(pump_panel, text="●  BUZZER STANDBY", style="Muted.TLabel"); self.buzzer_label.pack(pady=3)
         self.stats_label = ttk.Label(pump_panel, text="ACTIVATIONS 0  |  LAST UPDATE --:--:--", style="Muted.TLabel"); self.stats_label.pack(pady=3)

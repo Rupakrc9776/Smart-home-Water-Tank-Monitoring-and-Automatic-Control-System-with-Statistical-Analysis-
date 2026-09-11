@@ -1,8 +1,12 @@
 # SMART HOME WATER TANK MONITORING AND AUTOMATIC CONTROL SYSTEM WITH STATISTICAL ANALYSIS
 
 <p align="center">
+  <img src="assets/dashboard-ui.png" alt="Aqua Control dashboard hero banner" width="920">
+</p>
+
+<p align="center">
   <strong>Industrial-style monitoring, automatic pump control, and statistical visibility for a domestic water tank.</strong><br>
-  Arduino UNO hardware | Python desktop dashboard | CSV-backed analysis
+  4th Semester B.Tech Electrical Engineering mini project | Arduino UNO | Python desktop dashboard
 </p>
 
 <p align="center">
@@ -74,13 +78,8 @@ For example, `12,5,90,OFF,AUTO` reports the Arduino reading time in seconds, sen
   <figcaption><strong>Hardware Prototype</strong></figcaption>
 </figure>
 
-<<<<<<< HEAD
-<figure>
-  <img src="assets/circuit-diagram.png" alt="Circuit diagram for the smart water tank controller" width="720">
-=======
 <figure align="center" style="margin: 0 auto 24px; text-align: center;">
-  <img src="assets/circuit-diagram.png" alt="Tinkercad-style circuit diagram for the smart water tank controller" style="display: block; width: 100%; max-width: 720px; height: auto; margin: 0 auto 8px;">
->>>>>>> 17be2fd (Workflow Validation)
+  <img src="assets/circuit-diagram.png" alt="Circuit diagram for the smart water tank controller" style="display: block; width: 100%; max-width: 720px; height: auto; margin: 0 auto 8px;">
   <figcaption><strong>Tinkercad-Style Circuit Diagram</strong></figcaption>
 </figure>
 
@@ -163,7 +162,6 @@ Power, ground, I2C LCD pins, and pump-side isolation must be wired according to 
 |-- Documentation/             User, hardware, software, and test documentation
 |-- Python_Dashboard/           Python application guide
 |-- Report/                     Submission/report assets
-|-- screenshots/                Dashboard captures
 |-- assets/                     Dashboard and repository media
 |-- .github/                    Workflows, templates, and security policy
 |-- dashboard.py                Desktop dashboard
@@ -173,6 +171,20 @@ Power, ground, I2C LCD pins, and pump-side isolation must be wired according to 
 |-- assets/water_level_graph.png Exported graph example
 `-- requirements.txt            Python dependencies
 ```
+
+## Documentation
+
+| Topic | Guide |
+| --- | --- |
+| Installation | [Installation.md](Documentation/Installation.md) |
+| Architecture | [Architecture.md](Documentation/Architecture.md) |
+| Hardware | [Hardware.md](Documentation/Hardware.md) |
+| Software | [Software.md](Documentation/Software.md) |
+| Dashboard | [Dashboard.md](Documentation/Dashboard.md) |
+| Statistical analysis | [Statistical_Analysis.md](Documentation/Statistical_Analysis.md) |
+| Testing | [Testing.md](Documentation/Testing.md) |
+| Troubleshooting | [Troubleshooting.md](Documentation/Troubleshooting.md) |
+| Future scope | [Future_Scope.md](Documentation/Future_Scope.md) |
 
 ## Installation
 
@@ -212,6 +224,16 @@ python water_logger.py
 ```
 
 Dashboard widgets and operator workflows are described in [Documentation/Dashboard.md](Documentation/Dashboard.md).
+
+## Working Prototype
+
+<p align="center">
+  <a href="https://drive.google.com/" aria-label="Open Google Drive to view the working prototype video">
+    <img src="assets/drive_qr.png" alt="QR code opening Google Drive for the working prototype video" width="220">
+  </a>
+</p>
+<p align="center"><strong>Scan this QR Code to watch the Working Prototype Video.</strong><br>
+The QR currently opens Google Drive. Replace the destination with the shared video URL before publishing the prototype recording.</p>
 
 ## Statistical Analysis
 
