@@ -2,4 +2,4 @@
 
 This directory is reserved for the academic report, approved figures, and submission exports for the **SMART HOME WATER TANK MONITORING AND AUTOMATIC CONTROL SYSTEM WITH STATISTICAL ANALYSIS**.
 
-Keep generated PDFs and source documents versioned separately from runtime code when their editing tools introduce large binary diffs.
+Update documentation by Aranyak
