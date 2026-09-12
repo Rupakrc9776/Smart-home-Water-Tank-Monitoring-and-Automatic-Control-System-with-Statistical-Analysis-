@@ -191,8 +191,8 @@ Power, ground, I2C LCD pins, and pump-side isolation must be wired according to 
 Clone the repository and create an isolated environment:
 
 ```powershell
-git clone https://github.com/Dexter-Ron/Smart_Water_Tank.git
-cd Smart_Water_Tank
+git clone https://github.com/Rupakrc9776/Smart-home-Water-Tank-Monitoring-and-Automatic-Control-System-with-Statistical-Analysis-.git
+cd Smart-home-Water-Tank-Monitoring-and-Automatic-Control-System-with-Statistical-Analysis-
 py -3.13 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
